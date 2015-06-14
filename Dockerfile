@@ -4,14 +4,18 @@ MAINTAINER Alexey Larin <Alexey.I.Larin@gmail.com>
 
 ENV DSC_VERSION 21
 
-COPY datastax.repo /etc/yum.repo.d/datastax.repo
+ADD datastax.repo /etc/yum.repos.d/
 
-RUN yum update && \
-    yum install -y tar \
+RUN yum clean all && \
+    yum update -y 
+
+RUN yum install -y tar \
+                   hostname \
                    wget \
                    unzip \
                    dsc$DSC_VERSION \
                    cassandra$DSC_VERSION-tools
+RUN yum clean all
 
 ENV CASSANDRA_CONFIG /etc/cassandra/conf
 
@@ -32,3 +36,4 @@ VOLUME /var/lib/cassandra/data
 # 9160: thrift service
 EXPOSE 7000 7001 7199 9042 9160
 CMD ["cassandra", "-f"]
+
